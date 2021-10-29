@@ -4,28 +4,29 @@ import(
 	"fmt"
 )
 
+func max(a, b, c int)int{
+	if a>b{
+		if a>c{
+			return a
+		}
+		return c
+	}else{
+		if b>c{
+			return b
+		}
+		return c
+	}
+}
+
 func solution(inp []int){
 	res:=make(map[int]int)
+	m:=0
 	for _,val:=range inp{
-		if res[val]!=0{
-			res[val]+=1
-		}else{
-			res[val]=1
-		}
-		if res[val-1]!=0{
-			res[val-1]+=1
-		}else{
-			res[val-1]=1
-		}
+		res[val]+=1
+		res[val-1]+=1
+		m=max(res[val], res[val-1],m)
 	}
-	fmt.Printf("\n %+v \n", res)
-	var m int=0
-    for _,val:= range res{
-        if val>m{
-            m=val
-        }
-    }
-    fmt.Println("solution :",m)
+	fmt.Println("solution :",m)
 }
 
 func main(){
