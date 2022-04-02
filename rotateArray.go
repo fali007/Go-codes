@@ -21,15 +21,30 @@ func rotate(ary []int, k int){
 }
 
 func main(){
-	ary:=[]int{1,2,3,4,5,6,7,8,9}
-	// fmt.Println(rotateArray(ary,3))
-	rotate(ary,3)
+	ary:=[]int{1,2,3,4,5,6,7,8,9,10,11,12,13,15,17,19,20,34}
+	rotate(ary,5)
 	fmt.Println(ary)
-	point(&ary)
+	bst(ary,4)
 }
 
-func point(ary *[]int){
-	for index,e:=range *ary{
-		fmt.Printf("Value - %d Address - %p\n",e,&e)
+func bstOnRotated(ary []int,key int){
+	if len(ary)==0{
+		return
+	}
+	m:=len(ary)/2
+	if ary[m]==key{
+		fmt.Println(ary[m])
+		return
+	}else{
+		if ary[len(ary)-1]>ary[0]{
+			if ary[m]>key{
+				bst(ary[:m],key)
+			}else{
+				bst(ary[m+1:],key)
+			}
+		}else{
+			bst(ary[m+1:],key)
+			bst(ary[:m],key)
+		}
 	}
 }
