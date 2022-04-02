@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"bytes"
-	"net/http"
-	"io/ioutil"
+	// "io/ioutil"
 	"encoding/json"
+	"github.com/gorilla/websocket"
 )
 
 type Request struct{
@@ -29,14 +28,26 @@ func GetJsonEncoding(o interface{})[]byte{
 
 func worker(inp chan Request, out chan Resp, id int){
 	for i :=range inp{
-		resp, _ := http.Post("http://localhost:8080/index", "application/json",bytes.NewBuffer(GetJsonEncoding(i)))
-		r,_:=ioutil.ReadAll(resp.Body)
-		out<-Resp{string(r),id}
+		conn,_, err := websocket.DefaultDialer.Dial("ws://localhost:8080/index", nil)
+		if err!=nil{
+			fmt.Println("error")
+		}
+		conn.WriteMessage(websocket.TextMessage,GetJsonEncoding(i))
+		for{
+			_,resp,err:=conn.ReadMessage()
+			if err!=nil{
+				conn.Close()
+				break
+			}else{
+				out<-Resp{string(resp),id}
+			}
+		}
+		
 	}
 }
 
 func main(){
-	number:=1000
+	number:=100
 	inp:=make(chan Request,number)
 	out:=make(chan Resp,number)
 
