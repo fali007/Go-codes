@@ -1,0 +1,45 @@
+defer - will perform some action when the ip is out of the function.
+
+GC
+
+built in GC - reclaims memory when not used by programme anymore
+concurrent tricolor mark sweep algorithm - run along with main code
+it aims to utlize no more than 25% of available cpu
+
+tricolor algo
+	divides heap to three sets
+		white - gc collectable
+		black - definitely in use
+		grey - minght be not used/ collectible
+
+as number of objects in heap increases time increses to mark color. white is reclaimed during sweep phase. Sweeping occurs when goroutine attempts to allocae new objects in memory.
+
+When the rate of memory allocation is high - gc will try steal more routines for marking phase which 
+	speeds gc process
+	slows down rate of memory allocation
+
+	** this is important to ensure rate of cleanup is more than rate of allocation
+
+Escape analysis - determines what to be stored on heap or stack
+	If an object is used outside the fuction its stored on heap else in stack
+
+If there is tail latency then GC is cause.
+
+
+Clean code:
+	repeated usage should be declared first - improves the efficiency by not creating objects which will have to be garbage collected.
+	Reduce the numbe rof objects on heap
+	rearrgange structs for optimized data alignment
+
+eg :
+type BadObject struct {
+    A bool
+    B int64
+    C bool
+}
+type GoodObject struct {
+    A bool
+    C bool
+    B int64
+}
+
